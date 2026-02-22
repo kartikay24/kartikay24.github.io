@@ -1,4 +1,134 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-02-22T15:07:42+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Kartikay Agrawal</title><subtitle>A blog about technology and stuff related</subtitle><entry><title type="html">🗣️ Speech Analysis Using Parselmouth</title><link href="http://localhost:4000/markdown-speech/" rel="alternate" type="text/html" title="🗣️ Speech Analysis Using Parselmouth" /><published>2024-12-18T00:00:00+05:30</published><updated>2024-12-18T00:00:00+05:30</updated><id>http://localhost:4000/markdown-speech</id><content type="html" xml:base="http://localhost:4000/markdown-speech/"><![CDATA[<p><strong>Tutorial on using Parselmouth in Python to estimate Pitch and Formants</strong></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-02-22T16:18:02+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Kartikay Agrawal</title><subtitle>A blog about technology and stuff related</subtitle><entry><title type="html">Neural Decision Tree for Bio-TinyML</title><link href="http://localhost:4000/neural-decision-trees/" rel="alternate" type="text/html" title="Neural Decision Tree for Bio-TinyML" /><published>2024-12-25T15:30:00+05:30</published><updated>2024-12-25T15:30:00+05:30</updated><id>http://localhost:4000/neural-decision-trees</id><content type="html" xml:base="http://localhost:4000/neural-decision-trees/"><![CDATA[<h2 id="overview">Overview</h2>
+
+<p>In our work presented at the Biomedical Circuits and Systems Conference 2024, we introduce a <strong>Neural Decision Tree (NDT)</strong> — a hybrid architecture that combines the interpretability of decision trees with the end-to-end training capability of neural networks.</p>
+
+<p>The motivation was simple:</p>
+
+<blockquote>
+  <p>Can we design a model that trains like a neural network, but runs like a decision tree?</p>
+</blockquote>
+
+<p>The answer is yes — and it turns out to be particularly useful for TinyML healthcare systems.</p>
+
+<hr />
+
+<h2 id="the-problem">The Problem</h2>
+
+<p>Deep Neural Networks achieve high accuracy, but they are:</p>
+
+<ul>
+  <li>Computationally heavy</li>
+  <li>Memory intensive</li>
+  <li>Power hungry</li>
+  <li>Often black-box</li>
+</ul>
+
+<p>In TinyML healthcare deployments — especially battery-powered or rural diagnostic systems — inference cost directly translates to power consumption and device lifetime.</p>
+
+<p>Decision Trees are lightweight and interpretable, but they rely on handcrafted split criteria and cannot be trained end-to-end using backpropagation.</p>
+
+<p>We wanted both.</p>
+
+<hr />
+
+<h2 id="neural-decision-tree-ndt">Neural Decision Tree (NDT)</h2>
+
+<p>The Neural Decision Tree replaces classical entropy-based split rules with <strong>learnable neural decision nodes</strong>, trained using backpropagation.</p>
+
+<p>Unlike standard neural networks:</p>
+
+<ul>
+  <li>Only one path is activated per input (tree-style routing)</li>
+  <li>Computation scales linearly with depth</li>
+  <li>Parameterization remains lightweight</li>
+  <li>The structure retains interpretability</li>
+</ul>
+
+<p><img src="/assets%5Cimages%5Cneural-decision-trees%5Cmac_comparison.jpg" alt="Neural Decision Tree Architecture" /></p>
+
+<p><em>Neural Decision Tree architecture (depth = 2). Each node learns parameters while activating only one subtree per input.</em></p>
+
+<p>This routing mechanism is the key to reducing compute without sacrificing non-linearity.</p>
+
+<hr />
+
+<h2 id="does-it-work">Does It Work?</h2>
+
+<p>We evaluated NDT on five biomedical datasets:</p>
+
+<ul>
+  <li>Heart Disease</li>
+  <li>Parkinson’s Disease</li>
+  <li>Breast Cancer</li>
+  <li>Cervical Cancer</li>
+  <li>Epileptic Seizure Detection</li>
+</ul>
+
+<p>Across tasks, NDT performs competitively with neural networks — often within a small margin — while using significantly fewer parameters.</p>
+
+<p>But the real story is compute.</p>
+
+<hr />
+
+<h2 id="10-reduction-in-compute">10× Reduction in Compute</h2>
+
+<p>Multiply-accumulate operations (MACs) determine inference cost in TinyML systems.</p>
+
+<p>For example, on Epileptic Seizure detection:</p>
+
+<ul>
+  <li>Neural Network: ~11277 MACs</li>
+  <li>Neural Decision Tree: ~1073 MACs</li>
+</ul>
+
+<p>That’s over <strong>10× reduction in compute</strong>.</p>
+
+<p><img src="/assets%5Cimages%5Cneural-decision-trees%5Cmac_comparison.jpg" alt="MAC comparison NN vs NDT" /></p>
+
+<p><em>MAC comparison between Neural Networks and Neural Decision Trees across biomedical datasets.</em></p>
+
+<p>The efficiency gain comes directly from the tree-style routing: only one subtree is active at each depth.</p>
+
+<hr />
+
+<h2 id="why-this-matters">Why This Matters</h2>
+
+<p>Neural Decision Trees are:</p>
+
+<ul>
+  <li>Backpropagation-trainable</li>
+  <li>Interpretable</li>
+  <li>Hardware-compatible</li>
+  <li>TinyML-friendly</li>
+</ul>
+
+<p>They are not meant to replace deep neural networks.</p>
+
+<p>They are meant to enable machine learning where conventional neural networks are too costly.</p>
+
+<hr />
+
+<h2 id="looking-ahead">Looking Ahead</h2>
+
+<p>This work opens several directions:</p>
+
+<ul>
+  <li>Ensemble NDT architectures</li>
+  <li>Multiclass extensions</li>
+  <li>Regularization strategies</li>
+  <li>Neuromorphic or spiking NDT variants</li>
+</ul>
+
+<p>We see this as a foundational step toward <strong>efficient, interpretable edge intelligence for healthcare.</strong></p>
+
+<hr />
+
+<h2 id="links">Links</h2>
+
+<ul>
+  <li><a href="https://ieeexplore.ieee.org/abstract/document/10798396/">Read the full paper</a></li>
+  <li><a href="https://drive.google.com/file/d/1iIjWx_KhRVvta1Q8llej2lbeLwNZXWKI/view?usp=drive_link">Poster</a></li>
+</ul>]]></content><author><name></name></author><category term="neural" /><category term="decision-trees" /><category term="tinyml" /><category term="healthcare" /><category term="interpretable-ml" /><summary type="html"><![CDATA[A lightweight Neural Decision Tree (NDT) architecture that combines backpropagation training with decision-tree efficiency for TinyML healthcare applications.]]></summary></entry><entry><title type="html">🗣️ Speech Analysis Using Parselmouth</title><link href="http://localhost:4000/markdown-speech/" rel="alternate" type="text/html" title="🗣️ Speech Analysis Using Parselmouth" /><published>2024-12-18T00:00:00+05:30</published><updated>2024-12-18T00:00:00+05:30</updated><id>http://localhost:4000/markdown-speech</id><content type="html" xml:base="http://localhost:4000/markdown-speech/"><![CDATA[<p><strong>Tutorial on using Parselmouth in Python to estimate Pitch and Formants</strong></p>
 
 <h1 id="about-the-dataset-️">About the Dataset 🗃️</h1>
 
