@@ -82,7 +82,7 @@ For example, on Epileptic Seizure detection:
 
 That’s over **10× reduction in compute**.
 
-![MAC comparison NN vs NDT]({{ 'assets\images\neural-decision-trees\mac_comparison.png' | relative_url }})
+![MAC comparison NN vs NDT]({{ '/assets/images/neural-decision-trees/mac_comparison.png' | relative_url }})
 
 *MAC comparison between Neural Networks and Neural Decision Trees across biomedical datasets.*
 
