@@ -47,7 +47,7 @@ Unlike standard neural networks:
 - Parameterization remains lightweight
 - The structure retains interpretability
 
-![Neural Decision Tree Architecture]({{ 'assets\images\neural-decision-trees\mac_comparison.jpg' | relative_url }})
+![Neural Decision Tree Architecture]({{ '/assets/images/neural-decision-trees/ndt_architecture.png' | relative_url }})
 
 *Neural Decision Tree architecture (depth = 2). Each node learns parameters while activating only one subtree per input.*
 

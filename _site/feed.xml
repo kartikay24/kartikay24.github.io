@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-02-22T16:18:02+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Kartikay Agrawal</title><subtitle>A blog about technology and stuff related</subtitle><entry><title type="html">Neural Decision Tree for Bio-TinyML</title><link href="http://localhost:4000/neural-decision-trees/" rel="alternate" type="text/html" title="Neural Decision Tree for Bio-TinyML" /><published>2024-12-25T15:30:00+05:30</published><updated>2024-12-25T15:30:00+05:30</updated><id>http://localhost:4000/neural-decision-trees</id><content type="html" xml:base="http://localhost:4000/neural-decision-trees/"><![CDATA[<h2 id="overview">Overview</h2>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-02-22T16:19:48+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Kartikay Agrawal</title><subtitle>A blog about technology and stuff related</subtitle><entry><title type="html">Neural Decision Tree for Bio-TinyML</title><link href="http://localhost:4000/neural-decision-trees/" rel="alternate" type="text/html" title="Neural Decision Tree for Bio-TinyML" /><published>2024-12-25T15:30:00+05:30</published><updated>2024-12-25T15:30:00+05:30</updated><id>http://localhost:4000/neural-decision-trees</id><content type="html" xml:base="http://localhost:4000/neural-decision-trees/"><![CDATA[<h2 id="overview">Overview</h2>
 
 <p>In our work presented at the Biomedical Circuits and Systems Conference 2024, we introduce a <strong>Neural Decision Tree (NDT)</strong> — a hybrid architecture that combines the interpretability of decision trees with the end-to-end training capability of neural networks.</p>
 
@@ -44,7 +44,7 @@
   <li>The structure retains interpretability</li>
 </ul>
 
-<p><img src="/assets%5Cimages%5Cneural-decision-trees%5Cmac_comparison.jpg" alt="Neural Decision Tree Architecture" /></p>
+<p><img src="/assets/images/neural-decision-trees/ndt_architecture.png" alt="Neural Decision Tree Architecture" /></p>
 
 <p><em>Neural Decision Tree architecture (depth = 2). Each node learns parameters while activating only one subtree per input.</em></p>
 
