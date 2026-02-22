@@ -1,0 +1,122 @@
+---
+layout: page
+title: News
+---
+
+<style>
+.news-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.news-item {
+    background: linear-gradient(135deg, #f5f7fa, #ffffff);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.news-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.news-category {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 14px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.news-content {
+    color: #0d47a1;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.news-date {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.news-headline {
+    color: #1a1a1a;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.news-meta {
+    color: #7f8c8d;
+    font-size: 13px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 12px;
+}
+
+.news-authors {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.news-status-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #6dd5fa, #2193b0);
+    color: white;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.news-link {
+    display: inline-block;
+    margin-top: 12px;
+    background: #2193b0;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.news-link:hover {
+    background: #1a7a9f;
+    text-decoration: none;
+}
+</style>
+
+<div class="news-page">
+    <h1 style="text-align: center; margin-bottom: 40px; color: #1a1a1a;">News & Announcements</h1>
+    
+    {% for item in site.data.news %}
+    <div class="news-item">
+        <div class="news-category">{{ item.category }}</div>
+        <div class="news-headline">{{ item.headline }}</div>
+        <div class="news-meta">
+            <span>{{ item.date }}</span>
+            {% if item.venue %} • <strong>{{ item.venue }}</strong>{% endif %}
+            {% if item.patent_number %} • <strong>Patent No: {{ item.patent_number }}</strong>{% endif %}
+        </div>
+        <div class="news-authors">
+            <strong>Contributors:</strong> {{ item.authors }}
+        </div>
+        <div class="news-content">{{ item.content }}</div>
+        <div>
+            <span class="news-status-badge">{{ item.status }}</span>
+            {% if item.url %}
+            <a href="{{ item.url }}" target="_blank" class="news-link">Read More →</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

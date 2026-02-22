@@ -1,0 +1,12 @@
+---
+layout: default
+---
+{% include header.html %}
+
+{% if page.title == "Home" %}
+    {% include news-marquee.html %}
+{% endif %}
+
+{{content}}
+
+{% include footer.html %}

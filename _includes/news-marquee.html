@@ -1,0 +1,18 @@
+<div class="marquee-container">
+  <h1>News</h1>
+  <div class="marquee" id="marquee">
+    {% for item in site.data.news limit:5 %}
+    <span>{{ item.category }}:</span> {{ item.headline }}
+    {% endfor %}
+  </div>
+  <a href="{{ site.baseurl }}/news" class="news-see-more">See More News →</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const marquee = document.getElementById('marquee');
+    if (marquee) {
+        marquee.innerHTML += marquee.innerHTML;
+    }
+});
+</script>

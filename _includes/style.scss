@@ -1,0 +1,106 @@
+
+@import "base/variables";
+@import "base/normalize";
+@import "base/syntax";
+@import "base/general";
+@import "base/helpers";
+
+@import "pages/home-blog-projects";
+@import "pages/page";
+@import "pages/post";
+@import "pages/tags";
+
+@import "components/author";
+@import "components/disqus";
+@import "components/footer";
+@import "components/header";
+@import "components/nav";
+@import "components/others";
+@import "components/related";
+@import "components/share";
+@import "components/side-by-side";
+@import "components/social-links";
+@import "components/spoiler";
+
+/* News Marquee Styles */
+.marquee-container {
+    width: 100%;
+    max-width: 900px;
+    background: linear-gradient(135deg, #ffffff, #ffffff);
+    // border-radius: 12px;
+    padding: 20px 15px;
+    // box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+    height: 200px;
+    margin: 20px auto;
+}
+
+.marquee-container h1 {
+    font-weight: 600;
+    font-size: 24px;
+    color: #1a1a1a;
+    text-align: center;
+    background-color: white;
+    width: 100%;
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    // left: 50%;
+    // transform: translateX(-50%);
+    z-index: 2;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.marquee {
+    display: block;
+    line-height: 1.6;
+    font-size: 18px;
+    color: #000000;
+    position: relative;
+    transform: translate3d(0,0,0);
+    backface-visibility: hidden;
+    will-change: transform;
+    animation: scroll-vertical 20s linear infinite;
+    padding-top: 40px;
+}
+
+.marquee span {
+    display: block;
+    margin-bottom: 2px; 
+    color: rgb(0, 37, 138);
+    font-weight: bold;
+}
+
+.marquee:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-vertical {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+.news-see-more {
+    display: inline-block;
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    background: linear-gradient(135deg, #94bdfa, #5493f0);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 3;
+}
+
+.news-see-more:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg,  #94bdfa, #5493f0);
+}

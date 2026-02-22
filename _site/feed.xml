@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-02-22T15:07:42+05:30</updated><id>http://localhost:4000/feed.xml</id><title type="html">Kartikay Agrawal</title><subtitle>A blog about technology and stuff related</subtitle><entry><title type="html">🗣️ Speech Analysis Using Parselmouth</title><link href="http://localhost:4000/markdown-speech/" rel="alternate" type="text/html" title="🗣️ Speech Analysis Using Parselmouth" /><published>2024-12-18T00:00:00+05:30</published><updated>2024-12-18T00:00:00+05:30</updated><id>http://localhost:4000/markdown-speech</id><content type="html" xml:base="http://localhost:4000/markdown-speech/"><![CDATA[<p><strong>Tutorial on using Parselmouth in Python to estimate Pitch and Formants</strong></p>
+
+<h1 id="about-the-dataset-️">About the Dataset 🗃️</h1>
+
+<p>The dataset contains Vowels and consonants in the Hindi Language organised based on place and manner of articulation recorded in my voice.The dataset contains a total of 39 phonemes. 14 are Vowels and 25 are Consonants.</p>
+
+<p>The Dataset contains 2 Folders <em>Vowels &amp; Plosives</em>.</p>
+
+<p>Each File is a wav file sampled at <em>44100KHz</em> and a bit resolution of <em>16bits/sample</em>. The wav files are named by finding the equivalent letter available on keyboard to some of the symbols. Hence to avoid confusion they are kept in different sub-divided folders.</p>
+
+<ul>
+  <li><strong>Vowels(14)</strong> are further subcategorized into folders on the basis of
+    <ol>
+      <li><em>Primary(10)</em>
+        <blockquote>
+          <ul>
+            <li>Short(5)</li>
+            <li>Long(5)</li>
+          </ul>
+        </blockquote>
+      </li>
+      <li><em>Secondary(4)</em>
+        <blockquote>
+          <ul>
+            <li>Long(2)</li>
+            <li>Dipthongs(2)</li>
+          </ul>
+        </blockquote>
+      </li>
+    </ol>
+  </li>
+  <li><strong>Plosives(25)</strong> are divided on the basis of Place of coarticulation into:
+    <ol>
+      <li><em>Velar(5)</em></li>
+      <li><em>Labial(5)</em></li>
+      <li><em>Apico-Dental(5)</em></li>
+      <li><em>Retroflex(5)</em></li>
+      <li><em>Palatal(5)</em></li>
+    </ol>
+  </li>
+</ul>
+
+<p>Note:This has been done to make nasal sound names in the folders distinguishable.</p>
+
+<h1 id="importing-libraries">Importing Libraries</h1>
+
+<ul>
+  <li><strong>Parselmouth</strong> is a Python library that provides a <em>convenient interface for working with Praat</em>, a popular software tool for phonetic analysis. With Parselmouth, you can automate and streamline your phonetics research in Python</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Importing Libraries
+</span><span class="kn">import</span> <span class="nn">parselmouth</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
+
+<span class="n">sns</span><span class="p">.</span><span class="nb">set</span><span class="p">()</span>  <span class="c1"># Use seaborn's default style to make attractive graphs
+</span><span class="n">plt</span><span class="p">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s">'figure.dpi'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Show nicely large images in this notebook
+</span></code></pre></div></div>
+
+<h1 id="load-datafile">Load Datafile</h1>
+
+<p>For in depth understanding of my approach, I would be demonstrating the vowel <em>‘aa’</em></p>
+
+<h1 id="load-an-audio-file">Load an audio file</h1>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">snd</span> <span class="o">=</span> <span class="n">parselmouth</span><span class="p">.</span><span class="n">Sound</span><span class="p">(</span><span class="s">"/content/drive/MyDrive/Data/Vowels/Primary/Long/a_.wav"</span><span class="p">)</span>
+
+<span class="c1"># Defining Functions
+</span>
+<span class="c1"># Function to draw a spectrogram
+</span><span class="k">def</span> <span class="nf">draw_spectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">,</span> <span class="n">dynamic_range</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">"Spectrogram"</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">spectrogram</span><span class="p">.</span><span class="n">x_grid</span><span class="p">(),</span> <span class="n">spectrogram</span><span class="p">.</span><span class="n">y_grid</span><span class="p">()</span>
+    <span class="n">sg_db</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">log10</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">sg_db</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">sg_db</span><span class="p">.</span><span class="nb">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">dynamic_range</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">'afmhot'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">ylim</span><span class="p">([</span><span class="n">spectrogram</span><span class="p">.</span><span class="n">ymin</span><span class="p">,</span> <span class="n">spectrogram</span><span class="p">.</span><span class="n">ymax</span><span class="p">])</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Time [s]"</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"Frequency [Hz]"</span><span class="p">)</span>
+
+<span class="c1"># Function to draw intensity values
+</span><span class="k">def</span> <span class="nf">draw_intensity</span><span class="p">(</span><span class="n">intensity</span><span class="p">):</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">intensity</span><span class="p">.</span><span class="n">xs</span><span class="p">(),</span> <span class="n">intensity</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="n">T</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'w'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">intensity</span><span class="p">.</span><span class="n">xs</span><span class="p">(),</span> <span class="n">intensity</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="n">T</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"intensity [dB]"</span><span class="p">)</span>
+
+<span class="c1"># Function to draw Pitch Values
+</span><span class="k">def</span> <span class="nf">draw_pitch</span><span class="p">(</span><span class="n">pitch</span><span class="p">):</span>
+    <span class="c1"># Extract selected pitch contour, and
+</span>    <span class="c1"># replace unvoiced samples by NaN to not plot
+</span>    <span class="n">pitch_values</span> <span class="o">=</span> <span class="n">pitch</span><span class="p">.</span><span class="n">selected_array</span><span class="p">[</span><span class="s">'frequency'</span><span class="p">]</span>
+    <span class="n">pitch_values</span><span class="p">[</span><span class="n">pitch_values</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pitch</span><span class="p">.</span><span class="n">xs</span><span class="p">(),</span> <span class="n">pitch_values</span><span class="p">,</span> <span class="s">'o'</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'w'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pitch</span><span class="p">.</span><span class="n">xs</span><span class="p">(),</span> <span class="n">pitch_values</span><span class="p">,</span> <span class="s">'o'</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pitch</span><span class="p">.</span><span class="n">ceiling</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"fundamental frequency [Hz]"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h1 id="estimate-pitch--formants-using-spectral-analysis">Estimate Pitch &amp; Formants using Spectral Analysis</h1>
+
+<h2 id="plotting-signal">Plotting Signal</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">snd</span><span class="p">.</span><span class="n">xs</span><span class="p">(),</span> <span class="n">snd</span><span class="p">.</span><span class="n">values</span><span class="p">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">xlim</span><span class="p">([</span><span class="n">snd</span><span class="p">.</span><span class="n">xmin</span><span class="p">,</span> <span class="n">snd</span><span class="p">.</span><span class="n">xmax</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"time [s]"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"amplitude"</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># or plt.savefig("sound.png"), or plt.savefig("sound.pdf")
+</span></code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/signal.png" alt="Waveform of 'aa' vowel" /></p>
+
+<h2 id="plotting-intensity--spectrogram">Plotting Intensity &amp; Spectrogram</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plotting Intensity Values on Spectrograms
+</span><span class="n">intensity</span> <span class="o">=</span> <span class="n">snd</span><span class="p">.</span><span class="n">to_intensity</span><span class="p">()</span>
+<span class="n">spectrogram</span> <span class="o">=</span> <span class="n">snd</span><span class="p">.</span><span class="n">to_spectrogram</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">draw_spectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">draw_intensity</span><span class="p">(</span><span class="n">intensity</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">xlim</span><span class="p">([</span><span class="n">snd</span><span class="p">.</span><span class="n">xmin</span><span class="p">,</span> <span class="n">snd</span><span class="p">.</span><span class="n">xmax</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/spectrogram.png" alt="Spectrogram with Intensity overlay" /></p>
+
+<h2 id="plotting--estimating-pitch">Plotting &amp; Estimating Pitch</h2>
+
+<h1 id="estimate-pitch">Estimate pitch</h1>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Estimate pitch
+</span><span class="n">pitch</span> <span class="o">=</span> <span class="n">snd</span><span class="p">.</span><span class="n">to_pitch</span><span class="p">()</span>
+<span class="n">pitch_values</span> <span class="o">=</span> <span class="n">pitch</span><span class="p">.</span><span class="n">selected_array</span><span class="p">[</span><span class="s">'frequency'</span><span class="p">]</span>
+<span class="n">pitch_times</span> <span class="o">=</span> <span class="n">pitch</span><span class="p">.</span><span class="n">xs</span><span class="p">()</span>
+<span class="n">average_pitch</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">pitch_values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pitch_values</span><span class="p">[</span><span class="n">pitch_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="c1"># If desired, pre-emphasize the sound fragment before calculating the narrowband spectrogram
+</span><span class="n">pre_emphasized_snd</span> <span class="o">=</span> <span class="n">snd</span><span class="p">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">pre_emphasized_snd</span><span class="p">.</span><span class="n">pre_emphasize</span><span class="p">()</span>
+<span class="n">spectrogram</span> <span class="o">=</span> <span class="n">pre_emphasized_snd</span><span class="p">.</span><span class="n">to_spectrogram</span><span class="p">(</span><span class="n">window_length</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">maximum_frequency</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">draw_spectrogram</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">draw_pitch</span><span class="p">(</span><span class="n">pitch</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">xlim</span><span class="p">([</span><span class="n">snd</span><span class="p">.</span><span class="n">xmin</span><span class="p">,</span> <span class="n">snd</span><span class="p">.</span><span class="n">xmax</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/pitch.png" alt="Pitch estimation with spectrogram" /></p>
+
+<h2 id="plotting-formants">Plotting Formants</h2>
+
+<p>Maximum number of formants considered is 6 as it got better values. When considering lesser values, formants were estimated according to the overall trend.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Compute the wideband spectrogram and estimate the pitch
+</span><span class="n">wideband_spectrogram</span> <span class="o">=</span> <span class="n">snd</span><span class="p">.</span><span class="n">to_spectrogram</span><span class="p">(</span><span class="n">window_length</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">time_step</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+
+<span class="n">wideband_segment</span> <span class="o">=</span> <span class="n">snd</span><span class="p">.</span><span class="n">extract_part</span><span class="p">(</span><span class="n">from_time</span><span class="o">=</span><span class="n">wideband_spectrogram</span><span class="p">.</span><span class="n">xmin</span><span class="p">,</span> <span class="n">to_time</span><span class="o">=</span><span class="n">wideband_spectrogram</span><span class="p">.</span><span class="n">xmax</span><span class="p">,</span> <span class="n">preserve_times</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># Estimate the first three formants for the wideband segment
+</span><span class="n">wideband_formants</span> <span class="o">=</span> <span class="n">wideband_segment</span><span class="p">.</span><span class="n">to_formant_burg</span><span class="p">(</span><span class="n">max_number_of_formants</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="c1"># Extract times from the Pitch object for plotting the formants on the wideband spectrogram
+</span><span class="n">pitch</span> <span class="o">=</span> <span class="n">wideband_segment</span><span class="p">.</span><span class="n">to_pitch</span><span class="p">()</span>
+<span class="n">formant_times</span> <span class="o">=</span> <span class="n">pitch</span><span class="p">.</span><span class="n">xs</span><span class="p">()</span>
+
+<span class="n">draw_spectrogram</span><span class="p">(</span><span class="n">wideband_spectrogram</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">"Wide Band Spectrogram"</span><span class="p">)</span>
+
+<span class="c1"># Plot the formants on the wideband spectrogram
+</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">formant_values</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">wideband_formants</span><span class="p">.</span><span class="n">get_value_at_time</span><span class="p">(</span><span class="n">formant_number</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">formant_times</span>
+    <span class="p">]</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">formant_times</span><span class="p">,</span> <span class="n">formant_values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'w'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s">'Formant </span><span class="si">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/formants.png" alt="Wideband formants (raw)" /></p>
+
+<ul>
+  <li>We can see that the formants are not very clear from the image for the vowel.We would need to apply smoothing to the formants to get better approximate formants.</li>
+</ul>
+
+<h3 id="plotting-smoothed-formants">Plotting Smoothed Formants</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Function to apply smoothing to formant values
+</span><span class="k">def</span> <span class="nf">smooth_formants</span><span class="p">(</span><span class="n">formant_values</span><span class="p">,</span> <span class="n">window_size</span><span class="p">):</span>
+    <span class="n">smoothed_values</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">formant_values</span><span class="p">,</span> <span class="n">np</span><span class="p">.</span><span class="n">ones</span><span class="p">(</span><span class="n">window_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">'same'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">smoothed_values</span>
+
+<span class="c1"># Plot the formants on the wideband spectrogram
+</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">formant_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">wideband_formants</span><span class="p">.</span><span class="n">get_value_at_time</span><span class="p">(</span><span class="n">formant_number</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">formant_times</span><span class="p">]</span>
+
+    <span class="c1"># Apply smoothing to formant values
+</span>    <span class="n">smoothed_formants</span> <span class="o">=</span> <span class="n">smooth_formants</span><span class="p">(</span><span class="n">formant_values</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">formant_times</span><span class="p">,</span> <span class="n">smoothed_formants</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'b'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s">'Formant </span><span class="si">{</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/smoothed%20formants.png" alt="Smoothed formants" /></p>
+
+<ul>
+  <li>In practice it is possible that we might only recieve upto 2 formants as the others are getting averaged out due to the other 2 being more dominant.</li>
+</ul>
+
+<h1 id="estimate-pitch--formants-using-cepstral-analysis">Estimate Pitch &amp; Formants using Cepstral Analysis</h1>
+
+<p>Now we would try to estimate the pitch and Formants using the Cepstral Analysis.</p>
+<ul>
+  <li>Since Praat doesn’t offer ceptstral analysis.We would require to do it manually.</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Importing Libraries
+</span><span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="kn">import</span> <span class="n">hamming</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">scipy.fft</span> <span class="kn">import</span> <span class="n">fft</span><span class="p">,</span> <span class="n">ifft</span>
+<span class="kn">import</span> <span class="nn">scipy.io.wavfile</span> <span class="k">as</span> <span class="n">wav</span>
+
+<span class="c1">## Windowing Signal
+</span>
+<span class="c1"># Windowing using Hamming Function
+</span><span class="n">w</span> <span class="o">=</span> <span class="n">hamming</span><span class="p">(</span><span class="n">math</span><span class="p">.</span><span class="n">floor</span><span class="p">(</span><span class="mf">0.065</span> <span class="o">*</span> <span class="n">snd</span><span class="p">.</span><span class="n">sampling_frequency</span><span class="p">),</span> <span class="n">sym</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>  <span class="c1"># Convert the window length to an integer
+</span>
+
+<span class="k">def</span> <span class="nf">create_overlapping_blocks</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">nw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">math</span><span class="p">.</span><span class="n">floor</span><span class="p">(</span><span class="n">nw</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">R</span><span class="p">))</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">math</span><span class="p">.</span><span class="n">floor</span><span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="n">nw</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nb</span><span class="p">,</span> <span class="n">nw</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb</span><span class="p">):</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">step</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">nw</span> <span class="o">+</span> <span class="n">offset</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">B</span>
+
+
+<span class="c1"># Call the function with 'snd1' and 'w'
+</span><span class="n">B</span> <span class="o">=</span> <span class="n">create_overlapping_blocks</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">snd</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">B</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># Print the shape of the resulting matrix
+</span>
+
+<span class="k">def</span> <span class="nf">compute_cepstrum</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
+    <span class="c1"># Compute the FFT of the audio signal
+</span>    <span class="n">fft_result</span> <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="c1"># Compute the logarithm of the absolute value of the FFT
+</span>    <span class="n">log_abs_fft</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="nb">abs</span><span class="p">(</span><span class="n">fft_result</span><span class="p">))</span>
+
+    <span class="c1"># Compute the inverse FFT (iFFT) of the result
+</span>    <span class="n">snd1</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">real</span><span class="p">(</span><span class="n">ifft</span><span class="p">(</span><span class="n">log_abs_fft</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">snd1</span>
+
+
+<span class="n">snd1</span> <span class="o">=</span> <span class="n">compute_cepstrum</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+
+<span class="c1">## Plotting Cepstra
+</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">snd1</span><span class="p">)</span>
+
+<span class="c1">## Estimating Pitch
+</span>
+<span class="n">pitch_quefrency</span> <span class="o">=</span> <span class="p">(</span><span class="mi">300</span> <span class="o">+</span> <span class="n">np</span><span class="p">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">snd1</span><span class="p">[</span><span class="mi">300</span><span class="p">:</span><span class="mi">500</span><span class="p">]))</span> <span class="o">/</span> <span class="mi">44100</span>
+<span class="n">pitch_frequency</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">pitch_quefrency</span>
+
+<span class="n">pitch_frequency</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/plotting%20cepstra.png" alt="Cepstrum plot" />
+128.57142857142858</p>
+
+<p>We can see the pitch values are matching for both the methods.Hence it cross verifies the result.</p>
+
+<h2 id="estimating-formants">Estimating Formants</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">find_peaks</span>
+
+<span class="c1"># Initialise the subplot function using number of rows and columns
+</span><span class="n">figure</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">quefrencies</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span> <span class="o">/</span> <span class="mi">44100</span>
+<span class="n">frequencies</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span> <span class="o">*</span> <span class="mi">44100</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">cepstrum</span> <span class="o">=</span> <span class="n">compute_cepstrum</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">6</span><span class="p">])</span>
+    <span class="c1"># Suppressing large values
+</span>    <span class="n">cepstrum</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cepstrum</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Plotting cepstrum sequence
+</span>    <span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">].</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">quefrencies</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">math</span><span class="p">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">quefrencies</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)],</span>
+        <span class="n">cepstrum</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">math</span><span class="p">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cepstrum</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)],</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">liftered_cepstrum</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cepstrum</span><span class="p">))</span>
+    <span class="c1"># Liftering the signal
+</span>    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">80</span><span class="p">):</span>
+        <span class="n">liftered_cepstrum</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cepstrum</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+    <span class="c1"># Obtaining log compressed cepstrally smoothed spectrum
+</span>    <span class="n">cepstrally_smoothed_spectrum</span> <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="n">liftered_cepstrum</span><span class="p">)</span>
+
+    <span class="c1"># Plotting log compressed cepstrally smooth spectrum
+</span>    <span class="n">axis</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">].</span><span class="n">plot</span><span class="p">(</span><span class="n">frequencies</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">150</span><span class="p">],</span> <span class="n">cepstrally_smoothed_spectrum</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">150</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/estimating%20formants.png" alt="Formant estimation from cepstrum (6 frames)" /></p>
+
+<ul>
+  <li>We can see the formants from the 6 consecutive frames choosen at random.</li>
+</ul>
+
+<h1 id="plotting-multiple-pitches">Plotting Multiple Pitches</h1>
+
+<p>To make the pitches more visible and highlight them, we’ve applied the log to the spectrogram values to be able to differentiate between the pitch aspects of the different vowels</p>
+
+<h2 id="spectrograms-for-short-primary-vowels">Spectrograms for Short Primary Vowels</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">parselmouth</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="c1"># Directory containing your WAV files
+</span><span class="nb">dir</span> <span class="o">=</span> <span class="s">"/content/drive/MyDrive/Data/Vowels/Primary/Short/"</span>
+<span class="n">wav_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">file</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="k">if</span> <span class="nb">file</span><span class="p">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">".wav"</span><span class="p">)]</span>
+
+<span class="c1"># Set the figure size
+</span><span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Create a row of subplots
+</span><span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wav_files</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">wav_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wav_files</span><span class="p">):</span>
+    <span class="n">sound</span> <span class="o">=</span> <span class="n">parselmouth</span><span class="p">.</span><span class="n">Sound</span><span class="p">(</span><span class="nb">dir</span> <span class="o">+</span> <span class="n">wav_file</span><span class="p">)</span>
+    <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">sound</span><span class="p">.</span><span class="n">to_spectrogram</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="p">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_plots</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Adjust color mapping and dynamic range for better visibility
+</span>    <span class="n">plt</span><span class="p">.</span><span class="n">imshow</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">log10</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">.</span><span class="n">values</span><span class="p">),</span> <span class="n">aspect</span><span class="o">=</span><span class="s">'auto'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">"inferno"</span><span class="p">)</span>  <span class="c1"># Adjust cmap as needed
+</span>    <span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="n">wav_file</span><span class="p">)</span>
+
+<span class="c1"># Adjust the layout
+</span><span class="n">plt</span><span class="p">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/short%20vowels.png" alt="Short primary vowels - spectrogram grid" /></p>
+
+<h2 id="spectrograms-for-long-primary-vowels">Spectrograms for Long Primary Vowels</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">parselmouth</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="c1"># Directory containing your WAV files
+</span><span class="nb">dir</span> <span class="o">=</span> <span class="s">"/content/drive/MyDrive/Data/Vowels/Primary/Long/"</span>
+<span class="n">wav_files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">file</span> <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">os</span><span class="p">.</span><span class="n">listdir</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span> <span class="k">if</span> <span class="nb">file</span><span class="p">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">".wav"</span><span class="p">)]</span>
+
+<span class="c1"># Set the figure size
+</span><span class="n">plt</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Create a row of subplots
+</span><span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wav_files</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">wav_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wav_files</span><span class="p">):</span>
+    <span class="n">sound</span> <span class="o">=</span> <span class="n">parselmouth</span><span class="p">.</span><span class="n">Sound</span><span class="p">(</span><span class="nb">dir</span> <span class="o">+</span> <span class="n">wav_file</span><span class="p">)</span>
+    <span class="n">spectrogram</span> <span class="o">=</span> <span class="n">sound</span><span class="p">.</span><span class="n">to_spectrogram</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="p">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_plots</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Adjust color mapping and dynamic range for better visibility
+</span>    <span class="n">plt</span><span class="p">.</span><span class="n">imshow</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">log10</span><span class="p">(</span><span class="n">spectrogram</span><span class="p">.</span><span class="n">values</span><span class="p">),</span> <span class="n">aspect</span><span class="o">=</span><span class="s">'auto'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s">"inferno"</span><span class="p">)</span>  <span class="c1"># Adjust cmap as needed
+</span>    <span class="n">plt</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="n">wav_file</span><span class="p">)</span>
+
+<span class="c1"># Adjust the layout
+</span><span class="n">plt</span><span class="p">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/speech-parselmouth/long%20vowels.png" alt="Long primary vowels - spectrogram grid" /></p>
+
+<ul>
+  <li>We can clearly observe the pitch trends in the data in both the cases.</li>
+</ul>
+
+<hr />
+
+<h2 id="key-features">Key Features</h2>
+
+<ul>
+  <li><strong>Parselmouth Integration</strong>: Direct Python access to Praat algorithms</li>
+  <li><strong>Acoustic Analysis</strong>: Extract intensity, pitch, formants, and spectral properties</li>
+  <li><strong>Visualization</strong>: Publication-quality plots of acoustic features</li>
+  <li><strong>Statistical Analysis</strong>: Compute descriptive statistics of speech characteristics</li>
+</ul>
+
+<hr />
+
+<h2 id="further-reading">Further Reading</h2>
+
+<ul>
+  <li><a href="http://www.fon.hum.uva.nl/praat/">Praat Documentation</a></li>
+  <li><a href="https://github.com/YannickJadoul/Parselmouth">Parselmouth GitHub</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Speech_processing">Speech Processing Fundamentals</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Acoustic_phonetics">Acoustic Phonetics</a></li>
+</ul>
+
+<hr />
+
+<h2 id="full-interactive-notebook">Full Interactive Notebook</h2>
+
+<p>For the complete code with additional examples, formant analysis, and advanced techniques, view the interactive notebook:</p>
+
+<script src="https://gist.github.com/kartikay24/479dc1effd2ec4c9d87783bc50eaff65.js"> </script>]]></content><author><name>kartikayagrawal</name></author><category term="blog" /><category term="speech" /><category term="audio" /><category term="python" /><category term="praat" /><category term="parselmouth" /><summary type="html"><![CDATA[Speech analysis notebook using Parselmouth library]]></summary></entry></feed>
