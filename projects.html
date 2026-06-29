@@ -3,6 +3,20 @@ layout: page
 title: Projects
 ---
 <section class="list">
+    {% assign project_pages = site.pages | where: "project", true | sort: "date" | reverse %}
+    {% for project in project_pages %}
+        {% if project.hidden != true %}
+            <div class="item {% if project.star %}star{% endif %}">
+                <a class="url" href="{% if project.externalLink %}{{ project.externalLink }}{% else %}{{ site.url }}{{ project.url }}{% endif %}">
+                    {% if project.date %}
+                        <aside><time datetime="{{ project.date | date:"%d-%m-%Y" }}">{{ project.date | date: "%b %d %Y" }}</time></aside>
+                    {% endif %}
+                    <h3 class="title">{{ project.title }}</h3>
+                </a>
+            </div>
+        {% endif %}
+    {% endfor %}
+
     {% for post in site.posts %}
         {% if post.projects %}
             {% if post.hidden != true %}

@@ -1,8 +1,14 @@
 <div class="marquee-container">
   <h1>News</h1>
   <div class="marquee" id="marquee">
-    {% for item in site.data.news limit:5 %}
-    <span>{{ item.category }}:</span> {{ item.headline }}
+    {% assign current_year = "" %}
+    {% for item in site.data.news %}
+      {% assign item_year = item.date | date: "%Y" %}
+      {% if item_year != current_year %}
+        <span class="year-heading">{{ item_year }}</span>
+        {% assign current_year = item_year %}
+      {% endif %}
+      <span class="news-item-headline">{{ item.headline }}</span>
     {% endfor %}
   </div>
   <a href="{{ site.baseurl }}/news" class="news-see-more">See More News →</a>

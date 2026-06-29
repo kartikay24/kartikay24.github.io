@@ -445,13 +445,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .spoiler:hover:before { display: none; }
 
 /* News Marquee Styles */
-.marquee-container { width: 100%; max-width: 900px; background: linear-gradient(135deg, #ffffff, #ffffff); padding: 20px 15px; overflow: hidden; position: relative; height: 200px; margin: 20px auto; }
+.marquee-container { width: 100%; max-width: 900px; padding: 20px 15px; overflow: hidden; position: relative; height: 300px; margin: 20px auto; }
 
 .marquee-container h1 { font-weight: 600; font-size: 24px; color: #1a1a1a; text-align: center; background-color: white; width: 100%; margin: 0 auto; position: absolute; top: 0; z-index: 2; padding: 5px 10px; border-radius: 8px; }
 
-.marquee { display: block; line-height: 1.6; font-size: 18px; color: #000000; position: relative; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: scroll-vertical 20s linear infinite; padding-top: 40px; }
+.marquee { display: block; line-height: 1.6; font-size: 18px; color: #000000; position: relative; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: scroll-vertical 40s linear infinite; padding-top: 40px; }
 
 .marquee span { display: block; margin-bottom: 2px; color: #00258a; font-weight: bold; }
+
+.marquee .year-heading { color: #ff0000 !important; font-size: 2rem; text-transform: uppercase; letter-spacing: 0.16em; margin-top: 24px; margin-bottom: 12px; }
+
+.year-heading { font-size: 2rem; color: #ff0000; text-transform: uppercase; letter-spacing: 0.16em; margin-top: 24px; margin-bottom: 12px; font-weight: bold; }
+
+.news-item-headline { font-size: 1.5rem; font-weight: normal; color: #00258a; margin-bottom: 8px; }
 
 .marquee:hover { animation-play-state: paused; }
 
@@ -909,12 +915,70 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 </style>
 
 <div class="news-page">
-    <h1 style="text-align: center; margin-bottom: 40px; color: #1a1a1a;">News & Announcements</h1>
+    <h1 style="text-align: center; margin-bottom: 40px; color: #1a1a1a; background: linear-gradient(135deg, #f5f7fa, #ffffff); padding: 20px; border-radius: 12px;">News & Announcements</h1>
     
     
     <div class="news-item">
-        <div class="news-category">Publication (Non-Arxival Preprint)</div>
-        <div class="news-headline">Spotlight paper on spikingSSM for wearables at NeurIPS 2025!</div>
+        <div class="news-category">Publication</div>
+        <div class="news-headline">A spiking SSM for Time Series accepted at ICML 2026.</div>
+        <div class="news-meta">
+            <span>July 7, 2026</span>
+             • <strong>COEX, Seoul, South Korea</strong>
+            
+        </div>
+        <div class="news-authors">
+            <strong>Contributors:</strong> K. Agrawal, A. Vikram, V. Sharma, V. Nagabhushana, A. Borthakur
+        </div>
+        <div class="news-content">Proud to announce that our paper 'A Spiking Heterogeneous Harmonic Resonate-and-Fire State Space Model for Time Series' has been accepted at ICML 2026. Authored by K. Agrawal, A. Vikram, V. Sharma, V. Nagabhushana, and A. Borthakur.</div>
+        <div>
+            <span class="news-status-badge">Accepted</span>
+            
+            <a href="https://openreview.net/forum?id=dDGxzaRkxO" target="_blank" class="news-link">Read More →</a>
+            
+        </div>
+    </div>
+    
+    <div class="news-item">
+        <div class="news-category">Career</div>
+        <div class="news-headline">Joined Amazon as an Applied Scientist II Intern</div>
+        <div class="news-meta">
+            <span>May 11, 2026</span>
+             • <strong>Amazon, Bangalore, India</strong>
+            
+        </div>
+        <div class="news-authors">
+            <strong>Contributors:</strong> 
+        </div>
+        <div class="news-content">Thrilled to announce that I have joined Amazon's Geospatial ML Science Team as an Applied Scientist II Intern. I'm excited to contribute to Last Mile Address Delivery ecosystem.</div>
+        <div>
+            <span class="news-status-badge">Active</span>
+            
+        </div>
+    </div>
+    
+    <div class="news-item">
+        <div class="news-category">Publication</div>
+        <div class="news-headline">CATFormer at PMLR, NeuroAI Multimodal Intelligence @ AAAI 2026.</div>
+        <div class="news-meta">
+            <span>Jan 27, 2026</span>
+             • <strong>Singapore EXPO</strong>
+            
+        </div>
+        <div class="news-authors">
+            <strong>Contributors:</strong> K. Agrawal, A. Borthakur, A. K. Singh, P. Srikaran, D. Nandi, O. Pujari
+        </div>
+        <div class="news-content">We're delighted to announce the publication of 'CATFormer: When Continual Learning Meets Spiking Transformers With Dynamic Thresholds' has been published in the Proceedings of Machine Learning Research (PMLR), Volume 308, as part of the First Workshop on NeuroAI Multimodal Intelligence @ AAAI 2026.</div>
+        <div>
+            <span class="news-status-badge">Published</span>
+            
+            <a href="https://proceedings.mlr.press/v308/nagabhushana26a.html" target="_blank" class="news-link">Read More →</a>
+            
+        </div>
+    </div>
+    
+    <div class="news-item">
+        <div class="news-category">Preprint</div>
+        <div class="news-headline">Spotlight paper on spiking SSM for wearables at NeurIPS 2025!</div>
         <div class="news-meta">
             <span>December 5, 2025</span>
              • <strong>San Diego Convention Center, San Diego, CA, United States</strong>

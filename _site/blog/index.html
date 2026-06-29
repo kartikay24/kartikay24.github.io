@@ -445,13 +445,19 @@ pre { box-sizing: border-box; margin: 0 0 1.75em 0; width: 100%; padding: 5px 10
 .spoiler:hover:before { display: none; }
 
 /* News Marquee Styles */
-.marquee-container { width: 100%; max-width: 900px; background: linear-gradient(135deg, #ffffff, #ffffff); padding: 20px 15px; overflow: hidden; position: relative; height: 200px; margin: 20px auto; }
+.marquee-container { width: 100%; max-width: 900px; padding: 20px 15px; overflow: hidden; position: relative; height: 300px; margin: 20px auto; }
 
 .marquee-container h1 { font-weight: 600; font-size: 24px; color: #1a1a1a; text-align: center; background-color: white; width: 100%; margin: 0 auto; position: absolute; top: 0; z-index: 2; padding: 5px 10px; border-radius: 8px; }
 
-.marquee { display: block; line-height: 1.6; font-size: 18px; color: #000000; position: relative; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: scroll-vertical 20s linear infinite; padding-top: 40px; }
+.marquee { display: block; line-height: 1.6; font-size: 18px; color: #000000; position: relative; transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform; animation: scroll-vertical 40s linear infinite; padding-top: 40px; }
 
 .marquee span { display: block; margin-bottom: 2px; color: #00258a; font-weight: bold; }
+
+.marquee .year-heading { color: #ff0000 !important; font-size: 2rem; text-transform: uppercase; letter-spacing: 0.16em; margin-top: 24px; margin-bottom: 12px; }
+
+.year-heading { font-size: 2rem; color: #ff0000; text-transform: uppercase; letter-spacing: 0.16em; margin-top: 24px; margin-bottom: 12px; font-weight: bold; }
+
+.news-item-headline { font-size: 1.5rem; font-weight: normal; color: #00258a; margin-bottom: 8px; }
 
 .marquee:hover { animation-play-state: paused; }
 
